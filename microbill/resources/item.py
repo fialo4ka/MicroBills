@@ -2,7 +2,7 @@
 | Created: 2017-08-13
 | Updated: 2017-08-13
 """
-from flask_jwt import jwt_required
+#from flask_jwt import jwt_required
 from flask_restful import Resource, reqparse
 from models.item import ItemModel
 
@@ -24,7 +24,7 @@ class Item(Resource):
         help="Every item needs a store id."
     )
 
-    @jwt_required()
+    #@jwt_required()
     def get(self, name):
         """
         Finds an item by its name and returns it.
