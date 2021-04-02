@@ -1,6 +1,8 @@
 #from flask_jwt import jwt_required
 from flask_restful import Resource, reqparse
-from models.BillModel import BillModel
+from models.Bill import Bill
+from models.Category import Category
+from models.User import User
 from datetime import datetime
 
 
@@ -32,14 +34,14 @@ class Bill(Resource):
     )
     #@jwt_required()
     def get(self, date):
-        bills = BillModel.find_by_date(date)
+        bills = Bill.find_by_date(date)
         if bills:
             return bills.json_list(date)
         return {'message': 'Bill not found'}, 404
 
     def post(self, name):
         request_data = Bill.parser.parse_args()
-        bill = BillModel(name, **request_data)
+        bill = Bill(name, **request_data)
         try:
             bill.save_to_db()
         except:
@@ -48,17 +50,17 @@ class Bill(Resource):
         return bill.json(), 201
 
     def delete(self, id):
-        bill = BillModel.find_by_id(id)
+        bill = Bill.find_by_id(id)
         if bill:
             bill.delete_from_db()
         return {'message': 'Bill deleted'}
 
     def put(self, id):
         request_data = Bill.parser.parse_args()
-        bill = BillModel.find_by_id(id)
+        bill = Bill.find_by_id(id)
 
         if bill is None:
-            bill = BillModel(**request_data)
+            bill = Bill(**request_data)
         else:
             bill.amount = request_data['amount']
             bill.caregory_id = request_data['caregory_id']
@@ -72,4 +74,4 @@ class Bill(Resource):
 class BillList(Resource):
     @classmethod
     def get(cls):
-        return {'bills': [bill.json() for bill in BillModel.query.all()]}
+        return {'bills': [bill.json() for bill in Bill.query.all()]}

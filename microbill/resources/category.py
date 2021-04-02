@@ -1,9 +1,9 @@
 from flask_restful import Resource, reqparse
 
-from models.CategoryModel import CategoryModel
+from models.Category import Category
 
 
-class Category(Resource):
+class CategoryEdit(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument(
         'name',
@@ -38,4 +38,4 @@ class CategoryList(Resource):
 
     @classmethod
     def get(cls):
-        return {'category': [category.json() for category in CategoryModel.query.filter_by(activ=True).all()]}
+        return {'category': [cat.json() for cat in Category.query.filter_by(activ=True).all()]}

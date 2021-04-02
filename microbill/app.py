@@ -6,7 +6,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 #from security import authenticate, identity
 from resources.user import UserList
-from resources.category import Category, CategoryList
+from resources.category import CategoryEdit, CategoryList
 from resources.bill import Bill, BillList
 
 
@@ -36,7 +36,7 @@ def create_tables():
 
 api.add_resource(UserList, '/users')
 api.add_resource(CategoryList, '/categories')
-api.add_resource(Category, '/category/<string:name>')
+api.add_resource(CategoryEdit, '/category/<string:name>')
 api.add_resource(BillList, '/bills')
 api.add_resource(Bill, '/bill/')
 
@@ -65,4 +65,4 @@ app.register_blueprint(swaggerui_blueprint)
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
-    app.run(port=5000, debug=True)
+    app.run(port=5100, debug=True)

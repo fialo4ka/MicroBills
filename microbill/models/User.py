@@ -1,22 +1,20 @@
 from db import db
 
 
-class CategoryModel(db.Model):
-    __tablename__ = 'Category'
+class User(db.Model):
+    __tablename__ = 'User'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
-    description = db.Column(db.String(250))
-    activ = db.Column(db.Boolean)
 
-    bills = db.relationship('BillModel', lazy='dynamic')
+    bills = db.relationship('Bill', backref='user', lazy='dynamic')
 
     def __init__(self, name):
         self.name = name
-        self.activ = True
 
     def json(self):
-        return {'name': self.name,
+        return {'id': self.id,
+                'name': self.name,
                 'bills': [item.json() for item in self.bills.all()]}
 
     @classmethod
