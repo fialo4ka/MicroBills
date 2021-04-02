@@ -31,9 +31,10 @@ Usage
 =====
 Run the following commands start the server (assumes activated Python3 virtual env):
 
-.. code:: shell
+ nix-shell
+ cd microbill/
+ python app.py
 
-  python app.py
 
 
 Tests

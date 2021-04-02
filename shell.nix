@@ -6,6 +6,7 @@
         flask-restful
         pytest
         flask-swagger
+        flask-swagger-ui
         flask_sqlalchemy
         flask-jwt-extended
         pyjwt
