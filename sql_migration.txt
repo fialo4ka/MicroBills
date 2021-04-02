@@ -1,0 +1,7 @@
+sqlite3  microbill/data.db
+
+attach "/home/fialo4ka/Seafile/MeinSchatz/data.mmb" as db1;
+insert into user (id, name) select accountid,accountname from db1.AccountList_v1;
+insert into Category (id, name) select SUBCATEGID, SUBCATEGname from SUBCATEGORY_V1 where SUBCATEGID in  (select distinct SUBCATEGID from CHECKINGACCOUNT_V1);
+Update category set activ = true;
+insert into Bill (id, user_id, caregory_id, amount, date) select TRANSID, ACCOUNTID, SUBCATEGID, TRANSAMOUNT, TRANSDATE from CHECKINGACCOUNT_V1; 

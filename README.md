@@ -1,21 +1,9 @@
-Python 3 Flask RESTful API template
+Micro Bill API project
 ***********************************
-
-.. image:: https://travis-ci.org/stepgazaille/flask-restful-api-template.svg?branch=master
-    :target: https://travis-ci.org/stepgazaille/flask-restful-api-template
-
-.. contents:: **Contents of this document**
-   :depth: 2
-
 
 Description
 ===========
-This is a template project for creating REST APIs using Python 3 and Flask.
-
-
-Requirements
-============
-See `requirements.txt <https://github.com/stepgazaille/flask-restful-api-template/blob/master/requirements.txt>`_.
+Project to save and manage each month's bills. Created with REST APIs using Python 3 and Flask.
 
 
 Installation
