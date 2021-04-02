@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from models.Bill import Bill
 from models.Category import Category
 from models.User import User
+from models.Months import Months
 from datetime import datetime
 
 
@@ -75,3 +76,27 @@ class BillList(Resource):
     @classmethod
     def get(cls):
         return {'bills': [bil.json() for bil in Bill.query.all()]}
+
+
+def take_date(month, year):
+    return datetime(int(year), int(month), 1)
+
+class BillListByUser(Resource):   
+    @classmethod
+    def get(cls, userid, month, year):
+        if (month is None or year is None or year < 2019 or year >2030 or not(Months.has_key(month))):
+            return []
+        return {'bills': [bil.json() for bil in Bill.query
+                                                    .filter_by(user_id=userid)
+                                                    .filter(Bill.date >= take_date(month,year))
+                                                    .filter(Bill.date < take_date(month+1,year)).all()]}
+
+class BillListByMonth(Resource):   
+    @classmethod
+    def get(cls, month, year):
+        if (month is None or year is None or year < 2019 or year >2030 or not(Months.has_key(month))):
+            return []
+        return {'bills': [bil.json() for bil in 
+                Bill.query
+                        .filter(Bill.date >= take_date(month,year))
+                        .filter(Bill.date < take_date(month+1,year)).all()]}

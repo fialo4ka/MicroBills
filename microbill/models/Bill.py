@@ -1,17 +1,21 @@
 from db import db
+from .User import User
+from .Category import Category
+from .Months import Months
+from flask_sqlalchemy import SQLAlchemy, orm
+from sqlalchemy import func, and_
 
 def dump_datetime(value):
     """Deserialize datetime object into string form for JSON processing."""
     if value is None:
         return None
-    return [value.strftime("%Y-%m-%d"), value.strftime("%H:%M:%S")]
+    return value.strftime("%Y-%m-%d")
 
 class Bill(db.Model):
-    __tablename__ = 'Bill'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
-    category_id = db.Column(db.Integer, db.ForeignKey('Category.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    category_id = db.Column(db.Integer, db.ForeignKey(Category.id))
     amount = db.Column(db.Float(precision=2))
     date = db.Column(db.Date)
     date_update = db.Column(db.DateTime)
@@ -30,9 +34,6 @@ class Bill(db.Model):
 
 
     @classmethod
-    def find_by_date(cls, date):
-        return cls.query.filter_by(date=date)
-
     def find_by_id(cls, id):
         return cls.query.filter_by(date=id)
         
