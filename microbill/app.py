@@ -7,7 +7,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 #from security import authenticate, identity
 from resources.user import UserList
 from resources.category import CategoryEdit, CategoryList
-from resources.bill import Bill, BillList
+from resources.bill import BillEdit, BillList
 
 
 '''This is section 4 app.py file.'''
@@ -38,7 +38,7 @@ api.add_resource(UserList, '/users')
 api.add_resource(CategoryList, '/categories')
 api.add_resource(CategoryEdit, '/category/<string:name>')
 api.add_resource(BillList, '/bills')
-api.add_resource(Bill, '/bill/')
+api.add_resource(BillEdit, '/bill/')
 
 
 swaggerui_blueprint = get_swaggerui_blueprint(

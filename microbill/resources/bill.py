@@ -6,7 +6,7 @@ from models.User import User
 from datetime import datetime
 
 
-class Bill(Resource):
+class BillEdit(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument(
         'amount',
@@ -74,4 +74,4 @@ class Bill(Resource):
 class BillList(Resource):
     @classmethod
     def get(cls):
-        return {'bills': [bill.json() for bill in Bill.query.all()]}
+        return {'bills': [bil.json() for bil in Bill.query.all()]}
