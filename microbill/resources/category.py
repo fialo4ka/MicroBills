@@ -11,31 +11,116 @@ class CategoryEdit(Resource):
         required=True,
         help="This field cannot be left blank!")
 
-    def post(self):
-        data = CategoryRegister.parser.parse_args()
+    def get(self, category_id: int):
+        """
+        Get a category
+        ---
+        tags:
+          - category
+        parameters:
+          - in: path
+            name: category_id
+            type: integer
+            required: true
+            description: Numeric ID of the category to get
+        responses:
+          200:
+            description: Returns a category by id
+          404:
+            description: Category not exist
+        """
+        return Category.query.get_or_404(category_id).json()
 
-        if CategoryModel.find_by_name(data['name']):
-            return {
-                'message':
-                f"A category with name '{data['name']}' already exists."
-            }, 400
+    def put(self, category_id):
+        """
+        update a category
+        ---
+        tags:
+          - category
+        parameters:
+          - in: path
+            name: category_id
+            type: integer
+            required: true
+            description: Numeric ID of the category to get
+          - in: body
+            name: body
+            schema:
+              id: Category
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: name of category
+        responses:
+          200:
+            description: Returns updated category
+          404:
+            description: Category not exist
+        """
+        category = Category.query.get_or_404(category_id)
+        data = CategoryEdit.parser.parse_args()
 
-        category = CategoryModel(**data)  
+        category.name = data["name"]
+
         category.save_to_db()
-        return {"message": "Category created successfully."}, 201
+        return category.json()
 
     def delete(self):
-        data = CategoryRegister.parser.parse_args()
-        category = CategoryModel.find_by_name(data['name'])
+        data = CategoryEdit.parser.parse_args()
+        category = Category.find_by_name(data['name'])
 
-        if category:
-            category.delete_from_db()
+        if not category:
+            return {
+                'message':
+                f"A category with name '{data['name']}' does not exists."
+            }, 400
+        category.activ = False
+        category.save_to_db()
 
         return {'message': 'Category deleted'}
 
 
 class CategoryList(Resource):
+    def get():
+        """
+        Get a list of category
+        ---
+        tags:
+          - category
+        responses:
+          200:
+            description: Returns a list of category
+        """
+        return [cat.json() for cat in Category.query.filter_by(activ=True).all()]
 
-    @classmethod
-    def get(cls):
-        return {'category': [cat.json() for cat in Category.query.filter_by(activ=True).all()]}
+  
+    def post(self, category_id):
+        """
+        create a category
+        ---
+        tags:
+          - category
+        parameters:
+          - in: body
+            name: body
+            schema:
+              id: Category
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: name of category
+        responses:
+          200:
+            description: Returns updated category
+        """
+        category = Category.query.get_or_404(category_id)
+        data = CategoryEdit.parser.parse_args()
+
+        category.name = data["name"]
+
+        category.save_to_db()
+        return category.json()

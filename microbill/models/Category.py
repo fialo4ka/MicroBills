@@ -1,5 +1,5 @@
 from db import db
-
+from datetime import datetime
 
 class Category(db.Model):
     __tablename__ = 'Category'
@@ -8,6 +8,7 @@ class Category(db.Model):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(250))
     activ = db.Column(db.Boolean)
+    date_update = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     bills = db.relationship('Bill', backref='category', lazy='dynamic')
 
@@ -17,17 +18,18 @@ class Category(db.Model):
 
     def json(self):
         return {'id': self.id,
-                'name': self.name,
-                'bills': [item.json() for item in self.bills.all()]}
+                'name': self.name
+                }
 
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
+
+    def add_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
     def save_to_db(self):
-        db.session.add(self)
         db.session.commit()
 
     def delete_from_db(self):

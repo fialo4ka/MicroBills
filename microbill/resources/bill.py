@@ -1,10 +1,13 @@
 #from flask_jwt import jwt_required
 from flask_restful import Resource, reqparse
+from flask import request
+from sqlalchemy.sql.expression import extract
 from models.Bill import Bill
 from models.Category import Category
 from models.User import User
-from models.Months import Months
 from datetime import datetime
+from werkzeug.exceptions import BadRequest
+from typing import Optional
 
 
 class BillEdit(Resource):
@@ -33,14 +36,48 @@ class BillEdit(Resource):
         required=True,
         help="Every bill needs a store date."
     )
-    #@jwt_required()
+
     def get(self, date):
+        """
+        Get a list of all bills
+        ---
+        tags:
+          - bills
+        parameters:
+          - in: path
+            name: bill_id
+            type: integer
+            required: true
+            description: Numeric ID of the category to get
+        """
         bills = Bill.find_by_date(date)
         if bills:
             return bills.json_list(date)
         return {'message': 'Bill not found'}, 404
 
-    def post(self, name):
+    def put(self, bill_id):
+        """
+        Get a list of all bills
+        ---
+        tags:
+          - bills
+        parameters:
+          - in: path
+            name: bill_id
+            type: integer
+            required: true
+            description: Numeric ID of the category to get
+          - in: body
+            name: body
+            schema:
+              id: Bill
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: name of category
+        """
         request_data = Bill.parser.parse_args()
         bill = Bill(name, **request_data)
         try:
@@ -56,54 +93,80 @@ class BillEdit(Resource):
             bill.delete_from_db()
         return {'message': 'Bill deleted'}
 
-    def put(self, id):
-        request_data = Bill.parser.parse_args()
-        bill = Bill.find_by_id(id)
-
-        if bill is None:
-            bill = Bill(**request_data)
-        else:
-            bill.amount = request_data['amount']
-            bill.caregory_id = request_data['caregory_id']
-            bill.user_id = request_data['user_id']
-            bill.date = request_data['date']
-            bill.date_update = date.today()
-        bill.save_to_db()
-        return bill.json()
-
-
 class BillList(Resource):
-    @classmethod
-    def get(cls):
-        return {'bills': [bil.json() for bil in Bill.query.all()]}
+    
+    def get(userid: Optional[int] = None, categoryid: Optional[int] = None,
+            month: Optional[int] = None, year: Optional[int] = None ):
+        """
+        Get a list of all bills
+        ---
+        tags:
+          - bills
+        parameters:
+          - in: query
+            name: userid
+            type: integer
+            required: false
+            description: Numeric ID of the user to get
+          - in: query 
+            name: categoryid
+            type: integer
+            required: false
+            description: Numeric ID of the year to get
+          - in: query
+            name: month
+            type: integer
+            required: false
+            description: Numeric ID of the month to get
+          - in: query 
+            name: year
+            type: integer
+            required: false
+            description: Numeric ID of the year to get
+        responses:
+          200:
+            description: Returns a list of users
+        """
+        query = Bill.query
+        args = request.args
+        if ("userid" in args):
+            query = query.filter_by(user_id=args["userid"])
+        if ("categoryid" in args):
+            query = query.filter_by(category_id=args["categoryid"])
 
+        if "month" in args and "year" not in args:
+            return BadRequest("year not set")
 
-def take_date(month, year):
-    return datetime(int(year), int(month), 1)
+        if ("year" in args):
+            query =  query.filter(extract("year", Bill.date) == args["year"])
+            if ("month" in args):
+                query =  query.filter(extract("month", Bill.date) == args["month"])
+        return [bil.json() for bil in query.all()]
 
-class BillListByUser(Resource):   
-    @classmethod
-    def get(cls, userid, month, year):
-        if (month is None or year is None or year < 2019 or year >2030 or not(Months.has_key(month))):
-            return []
-        nextMonth = 1 if month+1 > 12 else month+1
-        nextYear = year+1 if month+1 > 12 else year
-        return {'bills': [bil.json() for bil in Bill.query
-                                                    .filter_by(user_id=userid)
-                                                    .filter(Bill.date >= take_date(month,year))
-                                                    .filter(Bill.date < take_date(nextMonth,nextYear)).all()]
-                }
-                                                    
-
-class BillListByMonth(Resource):   
-    @classmethod
-    def get(cls, month, year):
-        if (month is None or year is None or year < 2019 or year >2030 or not(Months.has_key(month))):
-            return []
-        nextMonth = 1 if month+1 > 12 else month+1
-        nextYear = year+1 if month+1 > 12 else year
-        return {'bills': [bil.json() for bil in 
-                Bill.query
-                        .filter(Bill.date >= take_date(month,year))
-                        .filter(Bill.date < take_date(nextMonth,nextYear)).all()]
-                }
+    
+    def post(self):
+        """
+        create a new bills
+        ---
+        tags:
+          - bills
+        parameters:
+          - in: body
+            name: body
+            schema:
+              id: Bill
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: name of category
+        """
+        request_data = Bill.parser.parse_args()
+        bill.amount = request_data['amount']
+        bill.caregory_id = request_data['caregory_id']
+        bill.user_id = request_data['user_id']
+        bill.date = request_data['date']
+        bill.date_update = date.today()
+        bill.add_to_db()
+        return bill.json()

@@ -1,3 +1,4 @@
+cd workspace/MicroBill
 sqlite3  microbill/data.db
 
 attach "/home/fialo4ka/Seafile/MeinSchatz/data.mmb" as db1;

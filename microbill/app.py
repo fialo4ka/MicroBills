@@ -5,9 +5,9 @@ from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 
 #from security import authenticate, identity
-from resources.user import UserList
+from resources.user import UserList, UserResource
 from resources.category import CategoryEdit, CategoryList
-from resources.bill import BillEdit, BillList, BillListByUser, BillListByMonth
+from resources.bill import BillEdit, BillList
 
 
 '''This is section 4 app.py file.'''
@@ -23,7 +23,10 @@ API_URL = '/spec'  # Our API url (can of course be a local resource)
 
 @app.route("/spec")
 def spec():
-    return jsonify(swagger(app))
+    swag = swagger(app)
+    swag['info']['version'] = "1.0"
+    swag['info']['title'] = "My API"
+    return jsonify(swag)
 
 
 @app.before_first_request
@@ -34,13 +37,15 @@ def create_tables():
 # Adding /auth end point:
 #jwt = JWT(app, authenticate, identity)
 
+
 api.add_resource(UserList, '/users')
+api.add_resource(UserResource, '/user/<int:user_id>')
 api.add_resource(CategoryList, '/categories')
-api.add_resource(CategoryEdit, '/category/<string:name>')
 api.add_resource(BillList, '/bills')
-api.add_resource(BillListByUser, '/bills/<int:userid>/month/<int:month>/year/<int:year>')
-api.add_resource(BillListByMonth, '/bills/<int:month>/<int:year>')
-api.add_resource(BillEdit, '/bill/')
+
+api.add_resource(CategoryEdit, '/category/<int:category_id>')
+api.add_resource(BillEdit, '/bill/<int:bill_id>')
+
 
 
 swaggerui_blueprint = get_swaggerui_blueprint(

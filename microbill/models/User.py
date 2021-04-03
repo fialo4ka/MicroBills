@@ -14,8 +14,8 @@ class User(db.Model):
 
     def json(self):
         return {'id': self.id,
-                'name': self.name,
-                'bills': [item.json() for item in self.bills.all()]}
+                'name': self.name
+                }
 
     @classmethod
     def find_by_name(cls, name):
