@@ -27,7 +27,13 @@ class Bill(db.Model):
         self.date = date
 
     def json(self):
-        return {'user': self.user_id, 'category': self.category_id,'amount': self.amount, 'date': dump_datetime(self.date), 'date_update': self.date_update}
+        return {'user_id': self.user_id,
+                'user_name': self.user.name, 
+                'category_id': self.category_id,
+                'category_name': self.category.name,
+                'amount': self.amount, 
+                'date': dump_datetime(self.date), 
+                'date_update': self.date_update}
     
     def json_list(self, date):
         return {'bills': [bill.json() for bill in cls.query.filter_by(date=date)]}

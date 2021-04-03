@@ -86,17 +86,24 @@ class BillListByUser(Resource):
     def get(cls, userid, month, year):
         if (month is None or year is None or year < 2019 or year >2030 or not(Months.has_key(month))):
             return []
+        nextMonth = 1 if month+1 > 12 else month+1
+        nextYear = year+1 if month+1 > 12 else year
         return {'bills': [bil.json() for bil in Bill.query
                                                     .filter_by(user_id=userid)
                                                     .filter(Bill.date >= take_date(month,year))
-                                                    .filter(Bill.date < take_date(month+1,year)).all()]}
+                                                    .filter(Bill.date < take_date(nextMonth,nextYear)).all()]
+                }
+                                                    
 
 class BillListByMonth(Resource):   
     @classmethod
     def get(cls, month, year):
         if (month is None or year is None or year < 2019 or year >2030 or not(Months.has_key(month))):
             return []
+        nextMonth = 1 if month+1 > 12 else month+1
+        nextYear = year+1 if month+1 > 12 else year
         return {'bills': [bil.json() for bil in 
                 Bill.query
                         .filter(Bill.date >= take_date(month,year))
-                        .filter(Bill.date < take_date(month+1,year)).all()]}
+                        .filter(Bill.date < take_date(nextMonth,nextYear)).all()]
+                }
