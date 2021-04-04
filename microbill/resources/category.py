@@ -1,8 +1,23 @@
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, Namespace, reqparse, fields
 
-from models.Category import Category
+from ..models.Category import Category
 
 
+api = Namespace("categories", description="Category related operations")
+
+
+category = api.model('Category', {
+    'id': fields.Integer(required=True, description="The category identifier"),
+    'name': fields.String(required=True, description='Amount'),
+})
+
+
+parser = api.parser()
+parser.add_argument(
+    "name", type=str, required=True, help="Category name", location="form"
+)
+
+@api.route("/<int:category_id>")
 class CategoryEdit(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument(
@@ -11,53 +26,18 @@ class CategoryEdit(Resource):
         required=True,
         help="This field cannot be left blank!")
 
+    @api.marshal_with(category)
     def get(self, category_id: int):
         """
         Get a category
-        ---
-        tags:
-          - category
-        parameters:
-          - in: path
-            name: category_id
-            type: integer
-            required: true
-            description: Numeric ID of the category to get
-        responses:
-          200:
-            description: Returns a category by id
-          404:
-            description: Category not exist
         """
         return Category.query.get_or_404(category_id).json()
 
+    @api.marshal_with(category)
+    @api.doc(parser=parser)
     def put(self, category_id):
         """
         update a category
-        ---
-        tags:
-          - category
-        parameters:
-          - in: path
-            name: category_id
-            type: integer
-            required: true
-            description: Numeric ID of the category to get
-          - in: body
-            name: body
-            schema:
-              id: Category
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  description: name of category
-        responses:
-          200:
-            description: Returns updated category
-          404:
-            description: Category not exist
         """
         category = Category.query.get_or_404(category_id)
         data = CategoryEdit.parser.parse_args()
@@ -65,7 +45,7 @@ class CategoryEdit(Resource):
         category.name = data["name"]
 
         category.save_to_db()
-        return category.json()
+        return category
 
     def delete(self):
         data = CategoryEdit.parser.parse_args()
@@ -82,40 +62,21 @@ class CategoryEdit(Resource):
         return {'message': 'Category deleted'}
 
 
+@api.route("")
 class CategoryList(Resource):
-    def get():
+    @api.marshal_list_with(category)
+    def get(self):
         """
         Get a list of category
-        ---
-        tags:
-          - category
-        responses:
-          200:
-            description: Returns a list of category
         """
-        return [cat.json() for cat in Category.query.filter_by(activ=True).all()]
+        return Category.query.filter_by(activ=True).all()
 
   
+    @api.marshal_with(category)
+    @api.doc(parser=parser)
     def post(self, category_id):
         """
         create a category
-        ---
-        tags:
-          - category
-        parameters:
-          - in: body
-            name: body
-            schema:
-              id: Category
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  description: name of category
-        responses:
-          200:
-            description: Returns updated category
         """
         category = Category.query.get_or_404(category_id)
         data = CategoryEdit.parser.parse_args()
@@ -123,4 +84,4 @@ class CategoryList(Resource):
         category.name = data["name"]
 
         category.save_to_db()
-        return category.json()
+        return category

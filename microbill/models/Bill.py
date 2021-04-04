@@ -1,4 +1,4 @@
-from db import db
+from ..db import db
 from .User import User
 from .Category import Category
 from flask_sqlalchemy import SQLAlchemy, orm
@@ -12,28 +12,6 @@ def dump_datetime(value):
     return value.strftime("%Y-%m-%d")
 
 class Bill(db.Model):
-    parser = reqparse.RequestParser()
-    parser.add_argument(
-        'user_id',
-        type=int,
-        required=True,
-        help="This field cannot be left blank!")
-    parser.add_argument(
-        'category_id',
-        type=int,
-        required=True,
-        help="This field cannot be left blank!")
-    parser.add_argument(
-        'amount',
-        type=int,
-        required=True,
-        help="This field cannot be left blank!")
-    parser.add_argument(
-        'date',
-        type=int,
-        required=False,
-        help="date of the bill")
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     category_id = db.Column(db.Integer, db.ForeignKey(Category.id))

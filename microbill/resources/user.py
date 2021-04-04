@@ -1,38 +1,32 @@
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, Namespace, reqparse, fields
 
-from models.User import User
+from ..models.User import User
 
 
+api = Namespace("users", description="User related operations")
+
+user = api.model('User', {
+    'id': fields.Integer(required=True, description="The user identifier"),
+    'name': fields.String(required=True, description='Amount'),
+})
+
+
+@api.doc(params={'user_id': 'An ID'})
+@api.route("/<int:user_id>")
 class UserResource(Resource):
 
+    @api.doc(responses={404: 'Not Found'})
+    @api.marshal_with(user)
     def get(self, user_id: int):
-        """
-        Get a user
-        ---
-        tags:
-          - users
-        parameters:
-          - in: path
-            name: user_id
-            type: integer
-            required: true
-            description: Numeric ID of the user to get
-        responses:
-          200:
-            description: Returns a user
-        """
         return User.query.get_or_404(user_id)
 
+
+@api.route("")
 class UserList(Resource):
 
-    def get():
+    @api.marshal_list_with(user)
+    def get(self):
         """
         Get a list of users
-        ---
-        tags:
-          - users
-        responses:
-          200:
-            description: Returns a list of users
         """
-        return [user.json() for user in User.query.all()]
+        return User.query.all()

@@ -1,4 +1,4 @@
-from db import db
+from ..db import db
 
 
 class User(db.Model):
@@ -11,11 +11,6 @@ class User(db.Model):
 
     def __init__(self, name):
         self.name = name
-
-    def json(self):
-        return {'id': self.id,
-                'name': self.name
-                }
 
     @classmethod
     def find_by_name(cls, name):

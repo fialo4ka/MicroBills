@@ -1,82 +1,48 @@
 #from flask_jwt import jwt_required
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, Namespace, reqparse, fields
 from flask import request
 from sqlalchemy.sql.expression import extract
-from models.Bill import Bill
-from models.Category import Category
-from models.User import User
 from datetime import datetime
 from werkzeug.exceptions import BadRequest
 from typing import Optional
 
+from ..models.Bill import Bill
+from ..models.Category import Category
+from ..models.User import User
+from .api import api
 
-class BillEdit(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument(
-        'amount',
-        type=float,
-        required=True,
-        help="This field cannot be left blank!"
-    )
-    parser.add_argument(
-        'caregory_id',
-        type=int,
-        required=True,
-        help="Every bill needs a store caregory."
-    )
-    parser.add_argument(
-        'user_id',
-        type=int,
-        required=True,
-        help="Every bill needs a store user."
-    )
-    parser.add_argument(
-        'date',
-        type=datetime,
-        required=True,
-        help="Every bill needs a store date."
-    )
 
-    def get(self, date):
+api = Namespace("bills", description="Bill related operations")
+
+bill = api.model('Bill', {
+    'amount': fields.Integer(required=True, description='Amount'),
+    'caregory_id': fields.Integer(required=True, description='category'),
+    'user_id': fields.Integer(required=True, description='user'),
+    'date': fields.DateTime(required=False, description='date'),
+})
+
+
+@api.route("/<int:bill_id>")
+@api.doc(
+    responses={404: "Bill not found"},
+    params={"bill_id": "The Bill ID"})
+class BillResource(Resource):
+
+    @api.marshal_with(bill, code=201)
+    def get(self, bill_id):
         """
         Get a list of all bills
-        ---
-        tags:
-          - bills
-        parameters:
-          - in: path
-            name: bill_id
-            type: integer
-            required: true
-            description: Numeric ID of the category to get
         """
         bills = Bill.find_by_date(date)
         if bills:
             return bills.json_list(date)
         return {'message': 'Bill not found'}, 404
 
+    @api.expect(bill)
+    @api.marshal_with(bill, code=201)
     def put(self, bill_id):
         """
         Get a list of all bills
-        ---
-        tags:
-          - bills
-        parameters:
-          - in: path
-            name: bill_id
-            type: integer
-            required: true
-            description: Numeric ID of the category to get
-          - in: body
-            name: body
-            schema:
-              id: Bill
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  description: name of category
         """
         request_data = Bill.parser.parse_args()
         bill = Bill(name, **request_data)
@@ -93,39 +59,18 @@ class BillEdit(Resource):
             bill.delete_from_db()
         return {'message': 'Bill deleted'}
 
+@api.route("")
 class BillList(Resource):
     
-    def get(userid: Optional[int] = None, categoryid: Optional[int] = None,
+
+    @api.param("userid", "The user identifier")
+    @api.param("categoryid", "The user identifier")
+    @api.param("month", "month, requires year")
+    @api.param("year", "year")
+    def get(self, userid: Optional[int] = None, categoryid: Optional[int] = None,
             month: Optional[int] = None, year: Optional[int] = None ):
         """
         Get a list of all bills
-        ---
-        tags:
-          - bills
-        parameters:
-          - in: query
-            name: userid
-            type: integer
-            required: false
-            description: Numeric ID of the user to get
-          - in: query 
-            name: categoryid
-            type: integer
-            required: false
-            description: Numeric ID of the year to get
-          - in: query
-            name: month
-            type: integer
-            required: false
-            description: Numeric ID of the month to get
-          - in: query 
-            name: year
-            type: integer
-            required: false
-            description: Numeric ID of the year to get
-        responses:
-          200:
-            description: Returns a list of users
         """
         query = Bill.query
         args = request.args
