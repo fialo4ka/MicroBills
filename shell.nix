@@ -13,5 +13,6 @@
         pkgs.nodejs
         npm
         node2nix
+        pkgs.openapi-generator-cli
     ]);
 }
