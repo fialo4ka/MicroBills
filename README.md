@@ -19,9 +19,20 @@ Usage
 =====
 Run the following commands start the server (assumes activated Python3 virtual env):
 
- nix-shell
- cd microbill/
- python app.py
+run nix 
+  nix-shell
+
+run api
+
+  cd microbill/
+  python app.py
+
+run react app
+  
+  
+  cd reactbill/
+  npm start
+
 
 
 

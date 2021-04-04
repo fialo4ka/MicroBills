@@ -9,5 +9,9 @@
         flask_sqlalchemy
         flask-jwt-extended
         pyjwt
-    ];
+    ] ++ (with pkgs.nodePackages; [
+        pkgs.nodejs
+        npm
+        node2nix
+    ]);
 }
