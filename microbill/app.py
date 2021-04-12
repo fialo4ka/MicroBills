@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_swagger_ui import get_swaggerui_blueprint
 
 #from security import authenticate, identity
@@ -9,8 +9,6 @@ from .db import db
 
 '''This is section 4 app.py file.'''
 app = Flask(__name__)
-api.init_app(app)
-db.init_app(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['RESTX_VALIDATE'] = True
@@ -18,6 +16,8 @@ app.secret_key = 'secret'
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/swagger.json'  # Our API url (can of course be a local resource)
 
+api.init_app(app)
+db.init_app(app)
 
 
 @app.before_first_request
