@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, Text, View } from "react-native";
-import { styles } from './Styles'
+import { styles } from '../theme/Styles'
 
 export default function AppSettings(){
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
-import { styles } from './Styles'
+import { styles } from '../theme/Styles'
 
 export default function Main({navigation}){
     const [dataLoading, finishLoading] = useState(true);

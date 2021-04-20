@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, ScrollView } from "react-native";
-import { styles } from './Styles'
+import { styles } from '../theme/Styles'
 
 export default function Edit(){
     return (

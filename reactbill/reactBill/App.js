@@ -7,13 +7,13 @@ import { Platform, View } from 'react-native';
 import { AppLoading } from 'expo';
 
 
-import Mainpage from './src/Main';
-import HeaderElement from './src/Header';
-import FooterElement from './src/Footer';
+import Mainpage from './src/pages/Main';
+import HeaderElement from './src/pages/Header';
+import FooterElement from './src/pages/Footer';
 import { navigationRef } from './src/RoadNavigation';
-import About from './src/About';
-import Edit from './src/Edit';
-import Settings from './src/AppSettings';
+import About from './src/pages/About';
+import Edit from './src/pages/Edit';
+import Settings from './src/pages/AppSettings';
 
 
 const Stack = createStackNavigator();
