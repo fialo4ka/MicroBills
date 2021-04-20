@@ -11,6 +11,10 @@ import Mainpage from './src/Main';
 import HeaderElement from './src/Header';
 import FooterElement from './src/Footer';
 import { navigationRef } from './src/RoadNavigation';
+import About from './src/About';
+import Edit from './src/Edit';
+import Settings from './src/AppSettings';
+
 
 const Stack = createStackNavigator();
 
@@ -33,8 +37,29 @@ export default function App() {
             header: () => <HeaderElement headerDisplay="Summary"/>
           }}
         />
+        <Stack.Screen 
+          name="Edit"
+          component={Edit}
+          options={{
+            header: () => <HeaderElement headerDisplay="Edit"/>
+          }}
+        /> 
+        <Stack.Screen 
+          name="Settings"
+          component={Settings}
+          options={{
+            header: () => <HeaderElement headerDisplay="Settings"/>
+          }}
+        /> 
+        <Stack.Screen 
+          name="About"
+          component={About}
+          options={{
+            header: () => <HeaderElement headerDisplay="About"/>
+          }}
+        />        
       </Stack.Navigator>
-      <FooterElement headerDisplay="home"/>
+      <FooterElement />
     </NavigationContainer>
     
   );

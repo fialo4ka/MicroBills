@@ -1,8 +1,8 @@
-import React from 'react';
 import { StyleSheet} from 'react-native';
 import variables from './CommonColor';
 
 
+const iconSize = 60;
 const footerTextConstatn = {
     height: 40,
     width : 40,
@@ -13,9 +13,13 @@ const footerButtonConstatn = {
     alignSelf: 'flex-start',
     paddingVertical: 6,
     flexDirection: 'row',
-    margin: 10,
-    padding: 10,
-}
+    margin: 5,
+    marginTop: 10,
+    marginLeft: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 32,
+};
 
 export const styles = StyleSheet.create({
     h1Light:{
@@ -29,7 +33,7 @@ export const styles = StyleSheet.create({
     },
     footer:{
         width: '100%',
-        height: 60,
+        height: 70,
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'center',
@@ -52,7 +56,6 @@ export const styles = StyleSheet.create({
         backgroundColor: variables.whiteColor,
     },
 
-
     lightText:{
         color: variables.mainLightColor,
     },
@@ -68,12 +71,14 @@ export const styles = StyleSheet.create({
 
     container:{
         flex : 1,
+        height: '100%',
         backgroundColor: variables.mainLightColor,
         alignItems: 'center',
     },
     card: {
         backgroundColor: variables.whiteColor,
         padding: 20,
+        paddingRight: 8,
         marginVertical: 5,
         marginHorizontal: 2,
         borderWidth: 1,
@@ -88,7 +93,29 @@ export const styles = StyleSheet.create({
         shadowRadius: 1.5,
         elevation: 3,
         width: '100%',
-        height: '93%',
-    }
+        height: '94%',
+        flexDirection: 'row',
+        direction: 'rtl',
+        justifyContent: 'flex-start',
+    },
+    box: {
+        width: '100%',
+        height: 50,
+        marginBottom: 10,
+        
+    },
+    containerText: {
+        flexDirection: 'column',
+        flex: 7,
+        justifyContent: 'flex-start',
+        padding: 8,    
+    },
+    containerButton: {
+        flexDirection: 'column',
+        direction: 'rtl',
+        flex: 1,
+        justifyContent: 'flex-start',
+        backgroundColor: 'transparent',
+    },    
 });
 

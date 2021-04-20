@@ -12,24 +12,23 @@ export default function Footer(props){
             <TouchableOpacity
                 style={props.headerDisplay == 'home' ? styles.footerAktivButton : styles.footerButton}
                 onPress={() => RootNavigation.navigate('MainScreen')}>
-                <FontAwesomeIcon style={props.headerDisplay == 'home' ? styles.footerActivText : styles.footerText} icon={ faHome } />
+                <FontAwesomeIcon  size={ 28 }  style={props.headerDisplay == 'home' ? styles.footerActivText : styles.footerText} icon={ faHome } />
             </TouchableOpacity>
             <TouchableOpacity
                 style={props.headerDisplay == 'add' ? styles.footerAktivButton : styles.footerButton}
-                onPress={() => RootNavigation.navigate('')}>
-                <FontAwesomeIcon style={props.headerDisplay == 'add' ? styles.footerActivText : styles.footerText} icon={ faPlus } />
+                onPress={() => RootNavigation.navigate('Edit')}>
+                <FontAwesomeIcon size={ 28 }   style={props.headerDisplay == 'add' ? styles.footerActivText : styles.footerText} icon={ faPlus } />
             </TouchableOpacity>  
             <TouchableOpacity
                 style={props.headerDisplay == 'set' ? styles.footerAktivButton : styles.footerButton}
-                onPress={() => RootNavigation.navigate('')}>
-                <FontAwesomeIcon style={props.headerDisplay == 'set' ? styles.footerActivText : styles.footerText} icon={ faCogs } />
+                onPress={() => RootNavigation.navigate('Settings')}>
+                <FontAwesomeIcon size={ 28 }  style={props.headerDisplay == 'set' ? styles.footerActivText : styles.footerText} icon={ faCogs } />
             </TouchableOpacity>         
             <TouchableOpacity
                 style={props.headerDisplay == 'info' ? styles.footerAktivButton : styles.footerButton}
-                onPress={() => RootNavigation.navigate('')}>
-                <FontAwesomeIcon style={props.headerDisplay == 'info' ? styles.footerActivText : styles.footerText} icon={ faInfo } />
+                onPress={() => RootNavigation.navigate('About')}>
+                <FontAwesomeIcon size={ 28 } style={props.headerDisplay == 'info' ? styles.footerActivText : styles.footerText} icon={ faInfo } />
             </TouchableOpacity>
-
         </View>
     );
 }
