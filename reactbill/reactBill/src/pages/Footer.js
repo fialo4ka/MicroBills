@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity} from 'react-native';
-import * as RootNavigation from '../RoadNavigation';
+import * as RootNavigation from '../helpers/RoadNavigation';
 import { styles } from '../theme/Styles'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCogs, faHome, faPlus, faInfo } from '@fortawesome/free-solid-svg-icons'

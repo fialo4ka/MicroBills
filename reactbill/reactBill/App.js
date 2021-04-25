@@ -10,7 +10,7 @@ import { AppLoading } from 'expo';
 import Mainpage from './src/pages/Main';
 import HeaderElement from './src/pages/Header';
 import FooterElement from './src/pages/Footer';
-import { navigationRef } from './src/RoadNavigation';
+import { navigationRef } from './src/helpers/RoadNavigation';
 import About from './src/pages/About';
 import Edit from './src/pages/Edit';
 import Settings from './src/pages/AppSettings';

@@ -1,44 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import React, { useEffect, useState, Component } from 'react';
+import { ActivityIndicator, FlatList, Text, View, TouchableOpacity } from "react-native";
 import { styles } from '../theme/Styles'
 
-export default function Main({navigation}){
+import fetchWrapper from '../helpers/fetchWrapper';
+import List from './List';
+
+export default function Main({navigation}) {
     const [dataLoading, finishLoading] = useState(true);
-    const [newsData,setData] = useState([]);
+    const [listData, setData] = useState([]);
+
+    const handlerDelete = (url) => {
+        finishLoading(true);
+        let fhgf = fetchWrapper.getDataFromApi(url)
+            .then((value) => {
+                setData(value); 
+                finishLoading(false);
+            });
+    };
 
     useEffect(() => {
-        fetch('https://petstore.swagger.io/v2/pet/5')
-            .then((responce) => responce.json())
-            .then((json) => setData(json))
-            .catch((error) => console.error(error))
-            .finally(() => finishLoading(false));
-    },[]);
+        handlerDelete('bills?year=2021&month=3');
+    },[]); 
 
+    const someData = [
+        {
+          user_id: 2,
+          category_id: 8,
+          amount: 125,
+          date: "2021-03-31",
+          date_update: null
+        },
+        {
+          user_id: 1,
+          category_id: 8,
+          amount: 283.04,
+          date: "2021-03-31",
+          date_update: null
+        }
+      ];
+
+    
     return (
         <View style={styles.container}>
             <View style={styles.card}>
                 <View style={styles.containerText}>
                     {dataLoading ? <ActivityIndicator/> : (
-                    <Text>{newsData.id}</Text>)}
+                    <List state={someData}></List>)}
                 </View>
                 <View style={styles.containerButton}>
-                    <View
+                    <TouchableOpacity
                         style={[styles.box, { backgroundColor: "powderblue" }]}
+                        onPress={ () => handlerDelete("2")}
                     />
-                    <View
+                    <TouchableOpacity
                         style={[styles.box, { backgroundColor: "skyblue" }]}
+                        onPress={ () => handlerDelete("3")}
                     />
-                    <View
+                    <TouchableOpacity
                         style={[styles.box, { backgroundColor: "steelblue" }]}
+                        onPress={ () => handlerDelete("4")}
                     />
-                    <View
+                    <TouchableOpacity
                         style={[styles.box, { backgroundColor: "powderblue" }]}
+                        onPress={ () => handlerDelete("5")}
                     />
-                    <View
+                    <TouchableOpacity
                         style={[styles.box, { backgroundColor: "skyblue" }]}
+                        onPress={ () => handlerDelete("6")}
                     />
-                    <View
+                    <TouchableOpacity
                         style={[styles.box, { backgroundColor: "steelblue" }]}
+                        onPress={ () => handlerDelete("hgh")}
                     />
                 </View>
             </View>

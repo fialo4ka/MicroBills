@@ -25,7 +25,7 @@ run nix
 run api
 
   cd microbill/
-  python app.py
+  python main.py
 
 run react app
   
