@@ -25,7 +25,12 @@ db.init_app(app)
 @app.before_first_request
 def create_tables():
     db.create_all()
-
+    
+@app.after_request
+def add_header(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['access-control-allow-headers'] = 'Content-Type,api_key,Authorization'
+    return response
 
 # Adding /auth end point:
 #jwt = JWT(app, authenticate, identity)

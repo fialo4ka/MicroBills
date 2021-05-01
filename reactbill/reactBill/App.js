@@ -59,7 +59,7 @@ export default function App() {
           }}
         />        
       </Stack.Navigator>
-      <FooterElement />
+       <FooterElement /> 
     </NavigationContainer>
     
   );

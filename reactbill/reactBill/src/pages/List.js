@@ -6,12 +6,14 @@ export default  class List extends Component {
         alert(item.user_id)
      }
     render() {
-        return (
+      if (this.props.state != undefined) {
+         console.log(this.props.state);
+         return (
            <View>
                {  
                 this.props.state.map((item, index) => (
                     <TouchableOpacity
-                       key = {item.id}
+                       key = {index}
                        onPress = {() => this.alertItemName(item)}>
                        <Text>
                           {item.amount}/{item.date}
@@ -20,6 +22,16 @@ export default  class List extends Component {
                  ))
               } 
            </View>
-        )
+        )         
+      }
+      else{
+         return (
+            <View>
+               <Text>Some error ocures</Text>
+            </View>
+         )
+      }
+
+
      }
   }

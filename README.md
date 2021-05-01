@@ -24,8 +24,7 @@ run nix
 
 run api
 
-  cd microbill/
-  python main.py
+  MICROBILL_SETTINGS=`pwd`/app.cfg python main.py
 
 run react app
   

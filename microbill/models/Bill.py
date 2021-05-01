@@ -26,7 +26,9 @@ class Bill(db.Model):
         self.date = date
 
     def json(self):
-        return {'user_id': self.user_id,
+        return {
+                'id':self.id,
+                'user_id': self.user_id,
                 #'user_name': self.user.name, 
                 'category_id': self.category_id,
                 #'category_name': self.category.name,
