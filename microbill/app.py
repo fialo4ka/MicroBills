@@ -12,7 +12,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['RESTX_VALIDATE'] = True
-app.secret_key = 'secret'
+
+app.config.from_envvar('MICROBILL_SETTINGS', silent=True)
+
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/swagger.json'  # Our API url (can of course be a local resource)
 
@@ -34,14 +36,14 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     config={  # Swagger UI config overrides
         'app_name': "Test application"
     },
-    # oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
-    #    'clientId': "your-client-id",
-    #    'clientSecret': "your-client-secret-if-required",
-    #    'realm': "your-realms",
-    #    'appName': "your-app-name",
-    #    'scopeSeparator': " ",
-    #    'additionalQueryStringParams': {'test': "hello"}
-    # }
+    oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
+       'clientId': app.config["OAUTH_CLIENT_ID"],
+       'clientSecret': app.config["OAUTH_CLIENT_SECRET"],
+       'realm': "http://oauth.o-g.at",
+       'appName': app.config["OAUTH_CLIENT_ID"],
+       'scopeSeparator': " ",
+       #'additionalQueryStringParams': {'test': "hello"}
+    }
     )
 
 app.register_blueprint(swaggerui_blueprint)

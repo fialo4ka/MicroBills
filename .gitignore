@@ -124,3 +124,5 @@ web-build/
 
 # macOS
 .DS_Store
+
+app.cfg

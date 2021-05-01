@@ -1,9 +1,10 @@
 from flask_restx import Api, Resource, reqparse
 from functools import wraps
-from flask import jsonify
+from flask import jsonify, current_app
 from authlib.integrations.flask_oauth2 import ResourceProtector, current_token
 from authlib.oauth2.rfc6750 import BearerTokenValidator
 from authlib.jose import jwt, JsonWebKey
+from datetime import datetime
 import requests
 
 
@@ -32,16 +33,43 @@ log = logging.getLogger('authlib')
 log.addHandler(logging.StreamHandler(sys.stdout))
 log.setLevel(logging.DEBUG)
 
+class Token:
+
+    def __init__(self, active, exp=None, scope=None, client_id=None, **kwargs):
+        self.active = active
+        self.exp = exp
+        self.scope = scope
+        self.client_id = client_id
+
+    @property
+    def revoked(self):
+        return not self.active
+
+    def get_scope(self):
+        return self.scope
+
+    def get_expires_at(self):
+        return self.exp
+
+    def check_client_id(self, client_id: str):
+        return self.client_id == client_id
+
 class MyBearerTokenValidator(BearerTokenValidator):
 
     def authenticate_token(self, token_string):
 
-        url = 'https://hydra.o-g.at/oauth/introspect'
+        url = 'https://hydra.o-g.at/oauth2/introspect'
         data = {'token': token_string, 'token_type_hint': 'access_token'}
-        auth = (secrets.internal_client_id, secrets.internal_client_secret)
+        auth = (current_app.config['OAUTH_CLIENT_ID'], current_app.config['OAUTH_CLIENT_SECRET'])
         resp = requests.post(url, data=data, auth=auth)
         resp.raise_for_status()
-        return resp.json()
+        tmp = resp.json()
+        print(tmp)
+        token = Token(**tmp)
+        if not token.check_client_id(current_app.config['OAUTH_CLIENT_ID']):
+            #invalid client id
+            return None
+        return token
 
     def request_invalid(self, request):
         return False
