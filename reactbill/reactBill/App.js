@@ -14,6 +14,8 @@ import { navigationRef } from './src/helpers/RoadNavigation';
 import About from './src/pages/About';
 import Edit from './src/pages/Edit';
 import Settings from './src/pages/AppSettings';
+import Autorize from './src/pages/Autorize';
+
 
 
 const Stack = createStackNavigator();
@@ -31,6 +33,14 @@ export default function App() {
         headerMode="screen"
       >
         <Stack.Screen 
+          name="Autorize"
+          component={Autorize}
+          options={{
+            header: () => <HeaderElement headerDisplay="Autorize"/>
+          }}
+        />
+
+        <Stack.Screen 
           name="MainScreen"
           component={Mainpage}
           options={{
@@ -43,7 +53,7 @@ export default function App() {
           options={{
             header: () => <HeaderElement headerDisplay="Edit"/>
           }}
-        /> 
+        />
         <Stack.Screen 
           name="Settings"
           component={Settings}
