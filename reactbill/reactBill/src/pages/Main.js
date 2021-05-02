@@ -4,7 +4,7 @@ import { ActivityIndicator, FlatList, Text, View, TouchableOpacity } from "react
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import { styles } from '../theme/Styles'
-import fetchWrapper from '../helpers/fetchWrapper';
+import {getDataFromApi} from '../helpers/fetchWrapper';
 import List from './List';
 
 export default function Main({navigation}) {
@@ -13,7 +13,7 @@ export default function Main({navigation}) {
 
     const dataHandler = (url) => {
         finishLoading(true);
-        let fhgf = fetchWrapper.getDataFromApi(url)
+        let fhgf = getDataFromApi(url)
             .then((value) => {
                 setData(value); 
                 console.log(value);

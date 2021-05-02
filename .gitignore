@@ -126,3 +126,5 @@ web-build/
 .DS_Store
 
 app.cfg
+
+secret.js

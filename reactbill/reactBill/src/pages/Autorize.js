@@ -1,102 +1,70 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { UIManager, Alert } from 'react-native';
-import { authorize, refresh } from 'react-native-app-auth';
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import * as React from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri, useAuthRequest, ResponseType } from 'expo-auth-session';
+import { Text, View, ScrollView, TouchableOpacity, Button} from 'react-native';
 import { styles } from '../theme/Styles'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import secret  from '../helpers/secret'
+import {setToken} from '../helpers/fetchWrapper';
 
+WebBrowser.maybeCompleteAuthSession();
 
-const configs = {
-  identityserver: {
-    issuer: 'https://oauth2.o-g.at',
-    clientId: 'reactbill',
-    redirectUrl: 'info.fialo4ka.reactbill:/oauthredirect',
-    additionalParameters: {},
-    scopes: ['openid', 'microbill'],
-    serviceConfiguration: {
-        authorizationEndpoint: 'https://oauth2.o-g.at/oauth2/auth',
-        tokenEndpoint: 'https://oauth2.o-g.at/oauth2/token',
-        revocationEndpoint: 'https://oauth2.o-g.at/oauth2/revoke'
-    }
-  }
-};
-
-const defaultAuthState = {
-  hasLoggedInOnce: false,
-  provider: '',
-  accessToken: '',
-  accessTokenExpirationDate: '',
-  refreshToken: ''
+const discovery = {
+  authorizationEndpoint: 'https://oauth2.o-g.at/oauth2/auth',
+  tokenEndpoint: 'https://oauth2.o-g.at/oauth2/token',
+  revocationEndpoint: 'https://oauth2.o-g.at/oauth2/revoke/reactbill',
 };
 
 export default function Autorize({navigation}) {
-    const [authState, setAuthState] = useState(defaultAuthState);
-    const handleAuthorize = useCallback(
-        async provider => {
-          try {
-            const config = configs[provider];
-            const newAuthState = await authorize(config);
-            console.log(newAuthState);
-            setAuthState({
-              hasLoggedInOnce: true,
-              provider: provider,
-              ...newAuthState
-            });
-          } catch (error) {
-            console.log(error.message);
-            Alert.alert('Failed to log in', error.message);
-          }
-        },
-        [authState]
-      );
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      responseType: ResponseType.Token,
+      clientId: 'reactbill',
+      clientSecret: secret.getSecret,
+      scopes: ['openid', 'microbill'],
+      redirectUri: makeRedirectUri({
+        scheme: 'info.fialo4ka.reactbill:/oauthredirect'
+      }),
+    },
+    discovery
+  );
 
-    const handleRefresh = useCallback(async () => {
-        try {
-          const config = configs[authState.provider];
-          const newAuthState = await refresh(config, {
-            refreshToken: authState.refreshToken
-          });
-    
-          setAuthState(current => ({
-            ...current,
-            ...newAuthState,
-            refreshToken: newAuthState.refreshToken || current.refreshToken
-          }))
-    
-        } catch (error) {
-          Alert.alert('Failed to refresh token', error.message);
-        }
-      }, [authState]);
+  React.useEffect(() => {
+    console.log("request = ");
+    console.log(request);
+    if (response?.type === 'success') {
+      setToken(response.authentication.accessToken);
+      console.log("response = ");
+      console.log(response);
+      }
+  }, [response]);
 
-    return (
-        <View style={styles.container}>
+  return (
+    <View style={styles.container}>
             <View style={styles.card}>
                 <ScrollView>
                     <Text style={styles.h1}>Autorize</Text>
-                    {!!authState.accessToken ? (
+                    { request && response  != null ? (
                         <View>
+                          
                             <Text>accessToken</Text>
-                            <Text>{authState.accessToken}</Text>
+                            <Text>{response.params.code}</Text>
                             <Text>accessTokenExpirationDate</Text>
-                            <Text>{authState.accessTokenExpirationDate}</Text>
+                            <Text>{response.params.accessTokenExpirationDate}</Text>
                             <Text>refreshToken</Text>
-                            <Text>{authState.refreshToken}</Text>
-                            <Text>scopes</Text>
-                            <Text>{authState.scopes.join(', ')}</Text>
+                            <Text>{response.params.refreshToken}</Text>
                         </View>
                     ) : (
                         <View>
                                 <TouchableOpacity
                                     style={styles.box}
-                                    onPress={ () => handleAuthorize('identityserver')} >
+                                    onPress={ () => promptAsync()} >
                                         <Icon name="clock-o" size={30} style={ styles.footerText }/>
                                 </TouchableOpacity>                           
                         </View>
-
-                    
                     )}
                 </ScrollView>
             </View>
         </View>
-    )
+  );
 }
