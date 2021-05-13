@@ -5,8 +5,14 @@ let token;
 function setToken(tkn){
     token = tkn;
 }
-  
+
+function getToken(){
+    return token;
+}  
 async function  getDataFromApi(url) {
+        if (token == null) {
+            return;
+        }
         try {
             const response = await fetch(mainUrl+url, 
                 {
@@ -26,4 +32,4 @@ async function  getDataFromApi(url) {
         }
     };
 
-export { getDataFromApi, setToken}
+export { getDataFromApi, setToken, getToken}

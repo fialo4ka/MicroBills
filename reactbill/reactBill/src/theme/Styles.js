@@ -27,8 +27,12 @@ export const styles = StyleSheet.create({
         color: variables.white,
     },
     h1:{
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
+        color: variables.mainMiddleColor,
+    },    
+    h2:{
+        fontSize: 17,
         color: variables.mainMiddleColor,
     },
     footer:{

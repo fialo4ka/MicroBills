@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native'
    
 export default  class List extends Component {
-    alertItemName = (item) => {
-        alert(item.user_id)
-     }
+   alertItemName = (item) => {
+      alert(item.user_id)
+   }
     render() {
+      console.log(Array.isArray(this.props.state));
       if (this.props.state != undefined) {
          console.log(this.props.state);
          return (
@@ -31,7 +32,5 @@ export default  class List extends Component {
             </View>
          )
       }
-
-
-     }
-  }
+   }
+}

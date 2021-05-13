@@ -13,9 +13,7 @@ import FooterElement from './src/pages/Footer';
 import { navigationRef } from './src/helpers/RoadNavigation';
 import About from './src/pages/About';
 import Edit from './src/pages/Edit';
-import Settings from './src/pages/AppSettings';
 import Autorize from './src/pages/Autorize';
-
 
 
 const Stack = createStackNavigator();
@@ -39,7 +37,6 @@ export default function App() {
             header: () => <HeaderElement headerDisplay="Autorize"/>
           }}
         />
-
         <Stack.Screen 
           name="MainScreen"
           component={Mainpage}
@@ -55,19 +52,12 @@ export default function App() {
           }}
         />
         <Stack.Screen 
-          name="Settings"
-          component={Settings}
-          options={{
-            header: () => <HeaderElement headerDisplay="Settings"/>
-          }}
-        /> 
-        <Stack.Screen 
           name="About"
           component={About}
           options={{
             header: () => <HeaderElement headerDisplay="About"/>
           }}
-        />        
+        />       
       </Stack.Navigator>
        <FooterElement /> 
     </NavigationContainer>

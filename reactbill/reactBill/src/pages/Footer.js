@@ -4,7 +4,6 @@ import * as RootNavigation from '../helpers/RoadNavigation';
 import { styles } from '../theme/Styles'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-
 export default function Footer(props){
     return(
         <View style={styles.footer}>           
@@ -20,7 +19,7 @@ export default function Footer(props){
             </TouchableOpacity>  
             <TouchableOpacity
                 style={props.headerDisplay == 'set' ? styles.footerAktivButton : styles.footerButton}
-                onPress={() => RootNavigation.navigate('Settings')}>
+                onPress={() => RootNavigation.navigate('Autorize')}>
                 <Icon name="cogs" size={40} style={props.headerDisplay == 'set' ? styles.footerActivText : styles.footerText}/>
             </TouchableOpacity>         
             <TouchableOpacity

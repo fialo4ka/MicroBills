@@ -38,7 +38,13 @@ export default function Main({navigation}) {
                 <View style={styles.containerButton}>
                     <TouchableOpacity
                         style={styles.box}
-                        onPress={ () => dataHandler(`bills?year=${nowDate.getFullYear()}&month=${nowDate.getMonth()}`)}
+                        onPress={ () => dataHandler(`bills?year=2021&month=1`)}//bills?year=${nowDate.getFullYear()}&month=${nowDate.getMonth()}
+                    >
+                        <Icon name="home" size={30} style={ styles.footerText }/>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.box}
+                        onPress={ () => dataHandler("3")}
                     >
                         <Icon name="clock-o" size={30} style={ styles.footerText }/>
                     </TouchableOpacity>

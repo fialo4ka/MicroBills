@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, ResponseType } from 'expo-auth-session';
 import { Text, View, ScrollView, TouchableOpacity, Button} from 'react-native';
@@ -16,6 +16,9 @@ const discovery = {
 };
 
 export default function Autorize({navigation}) {
+  const [dataLoading, finishLoading] = useState(true);
+  const [dateExpired, setData] = useState([]);
+
   const [request, response, promptAsync] = useAuthRequest(
     {
       responseType: ResponseType.Token,
@@ -29,11 +32,11 @@ export default function Autorize({navigation}) {
     discovery
   );
 
-  React.useEffect(() => {
-    console.log("request = ");
-    console.log(request);
+  useEffect(() => {
     if (response?.type === 'success') {
       setToken(response.authentication.accessToken);
+      let nowDate = new Date();
+      setData(new Date(Date.now() + response.params.expires_in*1000));
       console.log("response = ");
       console.log(response);
       }
@@ -44,24 +47,24 @@ export default function Autorize({navigation}) {
             <View style={styles.card}>
                 <ScrollView>
                     <Text style={styles.h1}>Autorize</Text>
-                    { request && response  != null ? (
-                        <View>
+                    <View>
+                            <TouchableOpacity
+                                style={styles.box}
+                                onPress={ () => promptAsync()} >
+                                    <Icon name="clock-o" size={30} style={ styles.footerText }/>
+                            </TouchableOpacity>                           
+                    </View>
+                    {(request && response  != null) ?
+                        (<View>
                           
-                            <Text>accessToken</Text>
-                            <Text>{response.params.code}</Text>
-                            <Text>accessTokenExpirationDate</Text>
-                            <Text>{response.params.accessTokenExpirationDate}</Text>
-                            <Text>refreshToken</Text>
-                            <Text>{response.params.refreshToken}</Text>
+                            <Text style={styles.h2}>AccessToken</Text>
+                            <Text>Expires in</Text>
+                            <Text>{dateExpired.toString()} ({response.params.expires_in})</Text>
+                            <Text>Token: </Text>
+                            <Text>{response.params.access_token}</Text>
                         </View>
-                    ) : (
-                        <View>
-                                <TouchableOpacity
-                                    style={styles.box}
-                                    onPress={ () => promptAsync()} >
-                                        <Icon name="clock-o" size={30} style={ styles.footerText }/>
-                                </TouchableOpacity>                           
-                        </View>
+                    ):(
+                      <View></View>
                     )}
                 </ScrollView>
             </View>
