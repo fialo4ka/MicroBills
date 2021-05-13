@@ -13,8 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['RESTX_VALIDATE'] = True
 
-app.config.from_env
-var('MICROBILL_SETTINGS', silent=True)
+app.config.from_envvar('MICROBILL_SETTINGS', silent=True)
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/swagger.json'  # Our API url (can of course be a local resource)
